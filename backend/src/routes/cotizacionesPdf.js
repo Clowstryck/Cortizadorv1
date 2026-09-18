@@ -140,7 +140,6 @@ function drawClienteVendedor(doc, cotizacion, y) {
   const vendedorLineas = [
     cotizacion.usuario_nombre,
     cotizacion.usuario_telefono ? `Tel: ${cotizacion.usuario_telefono}` : null,
-    cotizacion.usuario_email ? `Correo: ${cotizacion.usuario_email}` : null,
   ].filter(Boolean);
 
   doc.y = y;
@@ -271,9 +270,21 @@ function drawNotasCondiciones(doc, cotizacion, y) {
   return Math.max(yLeft, yRight) + 30;
 }
 
+const FIRMA_BLOCK_HEIGHT = 45;
+
 function drawFirmas(doc, y) {
-  y = ensureSpace(doc, y, 50);
-  const lineY = y + 25;
+  const idealY = CONTENT_BOTTOM - FIRMA_BLOCK_HEIGHT;
+  let firmaY;
+  if (y <= idealY) {
+    firmaY = idealY;
+  } else if (y + FIRMA_BLOCK_HEIGHT <= CONTENT_BOTTOM) {
+    firmaY = y;
+  } else {
+    doc.addPage();
+    firmaY = idealY;
+  }
+
+  const lineY = firmaY + 25;
 
   doc.moveTo(COL_LEFT_X, lineY).lineTo(COL_LEFT_X + COL_LEFT_W - 20, lineY)
     .strokeColor(COLOR_TEXT).lineWidth(0.5).stroke();
